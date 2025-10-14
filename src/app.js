@@ -3,7 +3,7 @@ import connectDB from "./config/database.js";
 import dotenv from "dotenv";
 import  {authRouter}  from "./router/auth.js";
 import  {profileRouter}  from "./router/profile.js";
-import  {requestsRouter}  from "./router/requests.js";
+import  {requestsRouter}  from "./router/request.js";
 import User from "./models/user.js";
 
 dotenv.config();
