@@ -43,7 +43,7 @@ requestsRouter.post(
           .status(400)
           .json({ error: "You already sent a request to this user." });
       }
-      console.log("existing" + existing);
+
       const data = await connectionRequest.save();
       res.json({
         message: `${fromUser.first_name} is interested in ${toUser.first_name}`,
@@ -51,6 +51,45 @@ requestsRouter.post(
       });
     } catch (error) {
       res.status(400).send("ERROR :" + error.message);
+    }
+  }
+);
+
+requestsRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      // loginuser
+      const loginUser = req.user;
+      //allowed status- accepted or rejected
+      const { status, requestId } = req.params;
+      const allowedStatus = ["accepted", "rejected"];
+      if (!allowedStatus.includes(status)) {
+        return res
+          .status(400)
+          .json({
+            error: "Not a valid status. Only accepted or rejected is allowed.",
+          });
+      }
+
+      //query a connection request obj that filtered by user:toUserId, status: interested
+      const interestedRequest = await ConnectionRequest.findOne({
+        _id: requestId,
+        toUserId: loginUser._id,
+        status: "interested",
+      });
+      if (!interestedRequest) {
+        return res.status(400).json({ error: "The request is not found." });
+      }
+      const updatedStatus =
+        interestedRequest.status == "interested" ? "accepted" : "rejected";
+      interestedRequest.status = updatedStatus;
+      await interestedRequest.save();
+
+      res.send(`Your status has been updated : ${interestedRequest.status}`);
+    } catch (error) {
+      res.status(400).send("ERROR: " + error.message);
     }
   }
 );

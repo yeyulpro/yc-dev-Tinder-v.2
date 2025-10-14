@@ -15,8 +15,11 @@ Yc DevTinter apis
 -POST/request/send/ignored/:userId -->
 
 =>-POST/request/send/:status/:userId
--POST/request/review/accepted/:requestedId
--POST/request/review/rejected/:requestId
+
+
+<!-- -POST/request/review/accepted/:requestedId
+-POST/request/review/rejected/:requestId -->
+=>POST/request/review/:status/:requestId 
 
 ## userRouter
 -GET/user/connections

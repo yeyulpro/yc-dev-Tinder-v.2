@@ -30,11 +30,10 @@ authRouter.post("/register", async (req, res) => {
 });
 
 authRouter.post("/login", async (req, res) => {
-  console.log("secretkey:"+process.env.JWT_SECRET);
+  
 
   try {
     const { emailId, password } = req.body;
-    console.log(emailId, password)
     const user = await User.findOne({ emailId: emailId });
     if (!user) {
       throw new Error("Invalid credentials.");
