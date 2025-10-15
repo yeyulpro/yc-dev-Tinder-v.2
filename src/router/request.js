@@ -66,11 +66,9 @@ requestsRouter.post(
       const { status, requestId } = req.params;
       const allowedStatus = ["accepted", "rejected"];
       if (!allowedStatus.includes(status)) {
-        return res
-          .status(400)
-          .json({
-            error: "Not a valid status. Only accepted or rejected is allowed.",
-          });
+        return res.status(400).json({
+          error: "Not a valid status. Only accepted or rejected is allowed.",
+        });
       }
 
       //query a connection request obj that filtered by user:toUserId, status: interested

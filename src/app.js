@@ -1,9 +1,10 @@
 import express from "express";
 import connectDB from "./config/database.js";
 import dotenv from "dotenv";
-import  {authRouter}  from "./router/auth.js";
+import { authRouter } from "./router/auth.js";
+import { userRouter } from "./router/user.js";
 import  {profileRouter}  from "./router/profile.js";
-import  {requestsRouter}  from "./router/request.js";
+import { requestsRouter } from "./router/request.js";
 import User from "./models/user.js";
 
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestsRouter);
+app.use("/", userRouter);
 
 
 app.get("/users", async (req, res) => {
