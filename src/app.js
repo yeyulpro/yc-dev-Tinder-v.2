@@ -87,7 +87,7 @@ app.patch("/user/:id", async (req, res) => {
 connectDB()
   .then(() => {
     console.log("DB Connected!");
-    app.listen(3000, () => console.log("Server is running on port 3000"));
+    app.listen(3000,"0.0.0.0" ,() => console.log("Server is running on port 3000"));
   })
   .catch((err) => {
     console.error("DB not connected", err);
