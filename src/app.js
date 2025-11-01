@@ -19,6 +19,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+
+
+
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestsRouter);
