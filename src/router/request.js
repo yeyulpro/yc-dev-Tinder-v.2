@@ -4,7 +4,7 @@ import ConnectionRequest from "../models/connectionRequest.js";
 import User from "../models/user.js";
 
 export const requestsRouter = express.Router();
-
+//initial stage of choosing a person you are interested in .
 requestsRouter.post(
   "/request/send/:status/:toUserId",
   userAuth,
@@ -44,7 +44,7 @@ requestsRouter.post(
           .json({ error: "You already sent a request to this user." });
       }
 
-      const data = await connectionRequest.save();
+      const data = await connectionRequest.save();  //.save return the object saved.
       res.json({
         message: `${fromUser.first_name} is interested in ${toUser.first_name}`,
         data,
@@ -54,7 +54,7 @@ requestsRouter.post(
     }
   }
 );
-
+// login User chooses to accept the partners among the ppl who are interested in the loginUser
 requestsRouter.post(
   "/request/review/:status/:requestId",
   userAuth,
@@ -72,20 +72,20 @@ requestsRouter.post(
       }
 
       //query a connection request obj that filtered by user:toUserId, status: interested
-      const interestedRequest = await ConnectionRequest.findOne({
+      const ReceivedConnectionRequest = await ConnectionRequest.findOne({
         _id: requestId,
         toUserId: loginUser._id,
         status: "interested",
       });
-      if (!interestedRequest) {
+      if (!ReceivedConnectionRequest) {
         return res.status(400).json({ error: "The request is not found." });
       }
       const updatedStatus =
-        interestedRequest.status == "interested" ? "accepted" : "rejected";
-      interestedRequest.status = updatedStatus;
-      await interestedRequest.save();
+        ReceivedConnectionRequest.status === "interested" ? "accepted" :ReceivedConnectionRequest.status;
+      ReceivedConnectionRequest.status = updatedStatus;
+      await ReceivedConnectionRequest.save();
 
-      res.send(`Your status has been updated : ${interestedRequest.status}`);
+      res.json({ message: `Your status has been updated : ${ReceivedConnectionRequest.status}`, ReceivedConnectionRequest});
     } catch (error) {
       res.status(400).send("ERROR: " + error.message);
     }

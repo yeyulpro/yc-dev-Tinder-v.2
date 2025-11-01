@@ -16,7 +16,7 @@ const connectionRequestSchema = new mongoose.Schema(
       required: true,
       enum: {
         values: ["ignored", "interested", "accepted", "rejected"], // only those values are accepted
-        message: `{VALUE} is incorrect status type`,
+        message: `{VALUE} is incorrect status type`,// value is a placeholder mongoose provided. value is relaced with the invalidated input that doesn't belong to the enum value group.
       },
     },
   },

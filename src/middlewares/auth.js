@@ -3,20 +3,21 @@ import dotenv from "dotenv";
 import User from "../models/user.js";
 dotenv.config();
 
-export const userAuth = async(req, res, next) => {
+export const userAuth = async (req, res, next) => {
   try {
+    console.log("Cookies:", req.cookies);
     const { token } = req.cookies;
     if (!token) {
       throw new Error("Token is not valid.");
     }
     const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-    const user =await User.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       throw new Error("User not found.");
     }
-      req.user = user;
+    req.user = user;
     next();
   } catch (error) {
-    res.status(400).send("ERROR: "+error.message);
+    res.status(400).send("ERROR: " + error.message);
   }
 };

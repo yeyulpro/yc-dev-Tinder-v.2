@@ -8,8 +8,9 @@ profileRouter.use(cookieParser());
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
+    
     const user = req.user;
-    res.send(user);
+    res.json(user);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
   }
@@ -24,7 +25,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     //  [key1, key2, key3..]
     Object.keys(req.body).forEach((key) => (loginUser[key] = req.body[key]));
     await loginUser.save();
-    res.send(`${loginUser.first_name}'s profile updated successfully.`);
+    res.json({ message: `${loginUser.first_name}'s profile updated successfully.`,user:loginUser });
   } catch (error) {
     res.status(400).send("Something wrong with updating info." + error.message);
   }

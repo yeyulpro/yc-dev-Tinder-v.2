@@ -12,7 +12,7 @@ export const registerValidation = (value) => {
     throw new Error("This is not a strong password format.");
   }
 };
-
+                                          // value is an object data User entered composed of items to be edited. 
 export const validateEditProfileData = (value) => {
   const allowedEditFields = [
     "first_name",

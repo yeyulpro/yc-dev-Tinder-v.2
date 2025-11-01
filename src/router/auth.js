@@ -2,16 +2,15 @@ import express from "express";
 import User from "../models/user.js";
 
 import bcrypt from "bcrypt";
-import {registerValidation} from '../utils/validation.js'
+import { registerValidation } from "../utils/validation.js";
 
 const authRouter = express.Router();
 
-
 authRouter.post("/register", async (req, res) => {
   try {
-     if (!req.body) {
-    throw new Error("No user information found.")
-  }
+    if (!req.body) {
+      throw new Error("No user information found.");
+    }
     //validation of data
     registerValidation(req.body);
 
@@ -23,15 +22,13 @@ authRouter.post("/register", async (req, res) => {
     });
 
     await user.save();
-    res.send("New user is successfully saved");
+    res.json({ message: "New user is successfully saved!!" ,data: user});
   } catch (error) {
     res.status(400).send("ERROR : " + error.message);
   }
 });
 
 authRouter.post("/login", async (req, res) => {
-  
-
   try {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId: emailId });
@@ -40,13 +37,13 @@ authRouter.post("/login", async (req, res) => {
     }
     const isPasswordValid = await user.validatePassword(password);
     if (!isPasswordValid) throw new Error("Invalid credentials.");
-    const token =  user.getJWT();
+    const token = user.getJWT();
     if (!token) {
       throw new Error("token is not created");
     }
-    res.cookie("token", token, { expires: new Date(Date.now() + 5 * 3600000) });
+    res.cookie("token", token, {httpOnly: true, secure:false, sameSite:"lax",path:"/",  expires: new Date(Date.now() + 5 * 3600000) });
 
-    res.send("Login success!!.");
+    res.send(user);
   } catch (error) {
     res.status(400).send("ERROR :" + error.message);
   }
@@ -55,7 +52,8 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", async (req, res) => {
   res
     .cookie("token", null, { expires: new Date(Date.now()) })
-    .send("logout successfully.");
-})
+    .status(200)
+    .send("logout success");
+});
 
 export { authRouter };

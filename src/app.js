@@ -5,12 +5,14 @@ import { authRouter } from "./router/auth.js";
 import { userRouter } from "./router/user.js";
 import  {profileRouter}  from "./router/profile.js";
 import { requestsRouter } from "./router/request.js";
+import cookieParser from "cookie-parser";
 import User from "./models/user.js";
 import cors from 'cors'
 
 dotenv.config();
 
 const app = express();
+app.use(cookieParser()); 
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials:true 
@@ -46,14 +48,6 @@ app.get("/user", async (req, res) => {
     res.status(404).send("Unable to get the user " + err.message);
   }
 });
-
-
-
-
-
-
-
-
 
 app.delete("/user/:id", async (req, res) => {
   const userId = req.params.id;
