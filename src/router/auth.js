@@ -29,6 +29,7 @@ authRouter.post("/register", async (req, res) => {
 });
 
 authRouter.post("/login", async (req, res) => {
+    console.log("Login request body:", req.body);
   try {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId: emailId });
