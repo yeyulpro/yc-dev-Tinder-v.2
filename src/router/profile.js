@@ -8,9 +8,9 @@ profileRouter.use(cookieParser());
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
+    //  if (!req.user) return res.status(401).json({ message: "Not logged in" });
     
-    const user = req.user;
-    res.json(user);
+    res.json(req.user);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
   }
