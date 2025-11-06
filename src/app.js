@@ -8,17 +8,17 @@ import { requestsRouter } from "./router/request.js";
 import cookieParser from "cookie-parser";
 import User from "./models/user.js";
 import cors from "cors";
+import { initializaSocket } from "./utils/socket.js";
+import { createServer } from "http";
 
 dotenv.config();
 
 const app = express();
+const httpServer = createServer(app);
+
+initializaSocket(httpServer);
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+
 app.use(express.json());
 
 app.use("/", authRouter);
@@ -26,67 +26,14 @@ app.use("/", profileRouter);
 app.use("/", requestsRouter);
 app.use("/", userRouter);
 
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.send(users);
-  } catch (err) {
-    res.status(400).send("not found :" + err.message);
-  }
-});
 
-app.get("/user", async (req, res) => {
-  const email = req.body.emailId;
-  const user = User.find(email);
-  try {
-    if (!user) {
-      res.status(404).send("No user found " + err.message);
-    }
-    res.send(user);
-  } catch (err) {
-    res.status(404).send("Unable to get the user " + err.message);
-  }
-});
 
-app.delete("/user/:id", async (req, res) => {
-  const userId = req.params.id;
-  try {
-    const deletedUser = await User.findOneAndDelete({ _id: userId });
-    console.log("deleted user obj" + deletedUser);
-    res.send("successfully deleted");
-  } catch (err) {
-    res.status(400).send("no deletion");
-    console.error(err.message);
-  }
-});
 
-app.patch("/user/:id", async (req, res) => {
-  const userId = req.params?.id;
-  const data = req.body;
-  try {
-    const ALLOWED_UPDATED = ["photoUrl", "about", "gender", "skills"];
-    const isUpdatedAllowed = Object.keys(data).every((x) =>
-      ALLOWED_UPDATED.includes(x)
-    );
-
-    if (!isUpdatedAllowed) {
-      throw new Error("Update is not allowed");
-    }
-    if (data.skills?.length > 3) {
-      throw new Error("only three skills at most..");
-    }
-
-    await User.findByIdAndUpdate(userId, data);
-    res.send("updated!!!");
-  } catch (error) {
-    res.status(400).send("updated not allowed " + error.message);
-  }
-});
 
 connectDB()
   .then(() => {
     console.log("DB Connected!");
-    app.listen(3000, "0.0.0.0", () =>
+    httpServer.listen(3000, "0.0.0.0", () =>
       console.log("Server is running on port 3000")
     );
   })
