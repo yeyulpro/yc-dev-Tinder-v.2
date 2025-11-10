@@ -2,6 +2,7 @@ import express from "express";
 import { userAuth } from "../middlewares/auth.js";
 import ConnectionRequest from "../models/connectionRequest.js";
 import User from "../models/user.js";
+import { run } from "../utils/sendEmail.js";
 
 export const requestsRouter = express.Router();
 //initial stage of choosing a person you are interested in .
@@ -44,7 +45,12 @@ requestsRouter.post(
           .json({ error: "You already sent a request to this user." });
       }
 
-      const data = await connectionRequest.save();  //.save return the object saved.
+      const data = await connectionRequest.save(); //.save return the object saved.
+
+      //ses email
+      const emailRequest = await run();
+      console.log("EMAIL " + emailRequest);
+
       res.json({
         message: `${fromUser.first_name} is interested in ${toUser.first_name}`,
         data,
@@ -81,11 +87,16 @@ requestsRouter.post(
         return res.status(400).json({ error: "The request is not found." });
       }
       const updatedStatus =
-        ReceivedConnectionRequest.status === "interested" ? "accepted" :ReceivedConnectionRequest.status;
+        ReceivedConnectionRequest.status === "interested"
+          ? "accepted"
+          : ReceivedConnectionRequest.status;
       ReceivedConnectionRequest.status = updatedStatus;
       await ReceivedConnectionRequest.save();
 
-      res.json({ message: `Your status has been updated : ${ReceivedConnectionRequest.status}`, ReceivedConnectionRequest});
+      res.json({
+        message: `Your status has been updated : ${ReceivedConnectionRequest.status}`,
+        ReceivedConnectionRequest,
+      });
     } catch (error) {
       res.status(400).send("ERROR: " + error.message);
     }
