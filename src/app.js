@@ -10,6 +10,8 @@ import User from "./models/user.js";
 import cors from "cors";
 import { initializaSocket } from "./utils/socket.js";
 import { createServer } from "http";
+import "./utils/cronjob.js"
+
 
 dotenv.config();
 

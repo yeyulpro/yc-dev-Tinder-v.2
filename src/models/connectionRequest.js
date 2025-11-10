@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const connectionRequestSchema = new mongoose.Schema(
+ const connectionRequestSchema = new mongoose.Schema(
   {
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -35,7 +35,9 @@ connectionRequestSchema.pre("save", function (next) {
 });
 //compound index -for efficient api query; 1:ascending, -1:descending
 connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
-const ConnectionRequest = mongoose.model(
+
+
+ const ConnectionRequest = mongoose.model(
   "connectionRequest",
   connectionRequestSchema
 );
