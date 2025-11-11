@@ -6,27 +6,40 @@ import { userRouter } from "./router/user.js";
 import { profileRouter } from "./router/profile.js";
 import { requestsRouter } from "./router/request.js";
 import cookieParser from "cookie-parser";
-import User from "./models/user.js";
-import cors from "cors";
 import { initializaSocket } from "./utils/socket.js";
-import { createServer } from "http";
+import cors from "cors";
 import "./utils/cronjob.js"
+
+
+import { createServer } from 'node:http';
+
+
 
 
 dotenv.config();
 
 const app = express();
-const httpServer = createServer(app);
 
-initializaSocket(httpServer);
+
+app.use(cors({
+  origin:"http://localhost:5173",
+  credentials:true,
+}))
 app.use(cookieParser());
-
 app.use(express.json());
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestsRouter);
 app.use("/", userRouter);
+
+ 
+//socket.io
+
+const server = createServer(app);
+
+initializaSocket(server);
+
 
 
 
@@ -35,7 +48,7 @@ app.use("/", userRouter);
 connectDB()
   .then(() => {
     console.log("DB Connected!");
-    httpServer.listen(3000, "0.0.0.0", () =>
+    server.listen(3000, "0.0.0.0", () =>
       console.log("Server is running on port 3000")
     );
   })
