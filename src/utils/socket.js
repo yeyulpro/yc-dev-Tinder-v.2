@@ -1,15 +1,23 @@
 
 import { Server } from "socket.io";
 import cors from "cors";
+import crypto from 'crypto';
+
+export const getSecretRoomId = (userId, targetUserId) => {
+    return crypto
+        .createHash("sha256")
+        .update([userId, targetUserId].sort().join("_"))
+        .digest("hex");
+}
 
 export const initializaSocket = (server) => {
 
 
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",  // 프론트엔드 주소
+            origin: "http://localhost:5173",
             methods: ["GET", "POST"],
-            credentials: true,                // 쿠키/세션 사용 시 필요
+            credentials: true,
         }
     });
 
@@ -19,12 +27,12 @@ export const initializaSocket = (server) => {
 
         socket.on("joinChat", ({ firstName, userId, targetUserId }) => {
             if (!userId || !targetUserId) return;
-            const roomId = [userId, targetUserId].sort().join('_');
+            const roomId = getSecretRoomId({ userId, targetUserId });
             socket.join(roomId);
             console.log(`${firstName} joined the room ${roomId}`)
         });
         socket.on("sendMessage", ({ firstName, userId, targetUserId, text }) => {
-            const roomId = [userId, targetUserId].sort().join('_');
+            const roomId = getSecretRoomId({ userId, targetUserId });
             socket.to(roomId).emit("messageReceived", { firstName, text })
             console.log(firstName + " said " + text)
 
