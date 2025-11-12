@@ -7,24 +7,21 @@ import { profileRouter } from "./router/profile.js";
 import { requestsRouter } from "./router/request.js";
 import cookieParser from "cookie-parser";
 import { initializaSocket } from "./utils/socket.js";
+import { chatRouter } from "./router/chat.js";
 import cors from "cors";
-import "./utils/cronjob.js"
+import "./utils/cronjob.js";
 
-
-import { createServer } from 'node:http';
-
-
-
+import { createServer } from "node:http";
 
 dotenv.config();
-
 const app = express();
 
-
-app.use(cors({
-  origin:"http://localhost:5173",
-  credentials:true,
-}))
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 
@@ -32,18 +29,13 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestsRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
 
- 
 //socket.io
 
 const server = createServer(app);
 
 initializaSocket(server);
-
-
-
-
-
 
 connectDB()
   .then(() => {
