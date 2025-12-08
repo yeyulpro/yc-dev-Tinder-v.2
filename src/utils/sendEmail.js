@@ -2,7 +2,8 @@
 import { SendEmailCommand } from "@aws-sdk/client-ses";
 import { sesClient } from "./sesClient.js";
 
- const createSendEmailCommand = (toAddress, fromAddress) => {
+const createSendEmailCommand = (toAddress, fromAddress, body) => {
+
   return new SendEmailCommand({
     Destination: {
       /* required */
@@ -20,16 +21,16 @@ import { sesClient } from "./sesClient.js";
         /* required */
         Html: {
           Charset: "UTF-8",
-          Data: "<h1>This is Amazon SES email test... by Yeyul </h1>",
+          Data: `<h1>${body}</h1>`,
         },
         Text: {
           Charset: "UTF-8",
-          Data: "This is Amazon SES email test... by Yeyul ",
+          Data: "Someone from yc-Tinder is interested in you. Please check it out~ ",
         },
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "This is Amazon SES email test by Yeyul",
+        Data: "YC-tinder notification",
       },
     },
     Source: fromAddress,
@@ -37,13 +38,15 @@ import { sesClient } from "./sesClient.js";
       /* more items */
     ],
   });
-  
+
 };
 
-export const run = async () => {
+export const run = async (body) => {
+  const toAddress = "yeyulchoi2@gmail.com";          // // temporary; test/sandbox use /subject to chagne for production 
+  const fromAddress = "yeyulchoi@yctinder.online";
   const sendEmailCommand = createSendEmailCommand(
-    "yeyulchoi@outlook.com",
-    "yeyul@ycdevpro.online",
+    toAddress, fromAddress,
+    body
   );
 
   try {

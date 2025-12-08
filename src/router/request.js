@@ -4,8 +4,10 @@ import ConnectionRequest from "../models/connectionRequest.js";
 import User from "../models/user.js";
 import { run } from "../utils/sendEmail.js";
 
+
 export const requestsRouter = express.Router();
 //initial stage of choosing a person you are interested in .
+
 requestsRouter.post(
   "/request/send/:status/:toUserId",
   userAuth,
@@ -48,8 +50,8 @@ requestsRouter.post(
       const data = await connectionRequest.save(); //.save return the object saved.
 
       //ses email
-      const emailRequest = await run();
-      console.log("EMAIL " + emailRequest);
+      const emailRes = await run(`${fromUser.first_name} is interested in ${toUser.first_name}`);
+      console.log("hey!~EMAIL : " +JSON.stringify(emailRes));  //
 
       res.json({
         message: `${fromUser.first_name} is interested in ${toUser.first_name}`,
